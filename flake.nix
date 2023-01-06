@@ -1,13 +1,14 @@
 {
   inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-22.11;
 
-  outputs = { self, nixpkgs }: {
-    packages.x86_64-linux = let
-      pkgs = import nixpkgs {
-        system = "x86_64-linux";
-      };
-    in rec {
-      odin = pkgs.odin.overrideAttrs (self: prev: rec {
+  outputs = { self, nixpkgs }: let
+    pkgs = import nixpkgs {
+      system = "x86_64-linux";
+      overlays = [ self.overlays.default ];
+    };
+  in {
+    overlays.default = final: prev: {
+      odin = prev.odin.overrideAttrs (self: prev: rec {
         version = "dev-2022-10";
         src = pkgs.fetchFromGitHub {
           owner = "odin-lang";
@@ -32,7 +33,7 @@
           sha256 = "sha256-a6ii6r+zYfO8AJzrL4TWr6Qtze27CZV9MMrA+N8oX+M=";
         };
 
-        buildInputs = [ odin ];
+        buildInputs = [ pkgs.odin ];
 
         postPatch = ''
           patchShebangs build.sh
@@ -47,6 +48,9 @@
           cp ols $out/bin
         '';
       };
+    };
+    packages.x86_64-linux = {
+      inherit (pkgs) odin ols;
     };
   };
 }
