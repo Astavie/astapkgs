@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = github:nixpkgs/nixos-22.11;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-22.11;
 
   outputs = { self, nixpkgs }: {
     packages.x86_64-linux = let
