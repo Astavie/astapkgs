@@ -48,9 +48,25 @@
           cp ols $out/bin
         '';
       };
+      marksman = final.buildDotnetModule rec {
+        pname = "marksman";
+        baseName = pname;
+        version = "2022-12-28";
+        VersionString = "c67a6fc";
+        
+        src = final.fetchFromGitHub {
+          owner = "artempyanykh";
+          repo = "marksman";
+          rev = version;
+          sha256 = "sha256-IOmAOO45sD0TkphbHWLCXXyouxKNJoiNYHXV/bw0xH4=";
+        };
+        
+        projectFile = "Marksman/Marksman.fsproj";
+        nugetDeps = ./marksman-deps-oIV8Eh.nix;
+      };
     };
     packages.x86_64-linux = {
-      inherit (pkgs) odin ols;
+      inherit (pkgs) odin ols marksman;
     };
   };
 }
