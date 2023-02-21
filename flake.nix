@@ -19,6 +19,7 @@
         LLVM_CONFIG = "${final.llvm.dev}/bin/llvm-config";
         postPatch = ''
           sed -i 's/^GIT_SHA=.*$/GIT_SHA=/' build_odin.sh
+          sed -i 's/^have_which$//' build_odin.sh
           patchShebangs build_odin.sh
         '';
       });
