@@ -106,15 +106,7 @@
         '';
       };
 
-      wivrn-install = final.writeShellScriptBin "wivrn-install" ''
-        client_file='${final.fetchurl {
-          url = "https://github.com/Meumeu/WiVRn/releases/download/${final.wivrn-server.version}/WiVRn-oculus-release.apk";
-          sha256 = "sha256-LWcTKcSbT0QdCHxxwlFH6ZODNt2kxqgoA+Scg5B5HkE=";
-        }}'
-
-        echo "Setting WiVRn as the default OpenXR runtime..."
-        mkdir -p ~/.config/openxr/1/
-        ln --symbolic --force ${final.writeTextFile {
+      wivrn-runtime = final.writeTextFile {
           name = "openxr_wivrn-dev.json";
           text = ''
             {
@@ -124,7 +116,13 @@
                 }
             }
           '';
-        }} ~/.config/openxr/1/active_runtime.json
+      };
+
+      wivrn-client-install = final.writeShellScriptBin "wivrn-client-install" ''
+        client_file='${final.fetchurl {
+          url = "https://github.com/Meumeu/WiVRn/releases/download/${final.wivrn-server.version}/WiVRn-oculus-release.apk";
+          sha256 = "sha256-LWcTKcSbT0QdCHxxwlFH6ZODNt2kxqgoA+Scg5B5HkE=";
+        }}'
 
         echo "Put on your Quest and authorize this machine to install the WiVRn client!"
         read -p '(press enter when done)'
@@ -190,7 +188,7 @@
       };
     };
     packages."x86_64-linux" = {
-      inherit (pkgs) odin ols marksman wivrn-server wivrn-install stardust-xr-server;
+      inherit (pkgs) odin ols marksman wivrn-server wivrn-client-install stardust-xr-server;
     };
   };
 }
