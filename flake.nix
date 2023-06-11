@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-22.11;
+  inputs.nixpkgs.url = github:NixOS/nixpkgs/nixos-23.05;
 
   inputs.fenix.url = github:nix-community/fenix;
   inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -130,24 +130,6 @@
         echo 'Installing client...'
         ${final.android-tools}/bin/adb install -r "$client_file"
       '';
-
-      # ---- OTHER ----
-      marksman = final.buildDotnetModule rec {
-        pname = "marksman";
-        baseName = pname;
-        version = "2022-12-28";
-        VersionString = "c67a6fc";
-        
-        src = final.fetchFromGitHub {
-          owner = "artempyanykh";
-          repo = "marksman";
-          rev = version;
-          sha256 = "sha256-IOmAOO45sD0TkphbHWLCXXyouxKNJoiNYHXV/bw0xH4=";
-        };
-        
-        projectFile = "Marksman/Marksman.fsproj";
-        nugetDeps = ./marksman-deps-oIV8Eh.nix;
-      };
     };
     packages."x86_64-linux" = {
       inherit (pkgs) odin ols marksman wivrn-server wivrn-client-install stardust-xr-server;
