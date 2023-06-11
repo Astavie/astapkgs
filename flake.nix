@@ -15,12 +15,12 @@
     overlays.default = final: prev: {
       # ---- ODIN ----
       odin = prev.odin.overrideAttrs (self: prev: rec {
-        version = "dev-2023-04";
+        version = "dev-2023-05";
         src = final.fetchFromGitHub {
           owner = "odin-lang";
           repo = "Odin";
           rev = version;
-          sha256 = "sha256-lpuBANuu7DWcP4/GxWamTzmg87Q1EXw2jR0yh/YBWQI=";
+          sha256 = "sha256-qEewo2h4dpivJ7D4RxxBZbtrsiMJ7AgqJcucmanbgxY=";
         };
         LLVM_CONFIG = "${final.llvm.dev}/bin/llvm-config";
         postPatch = ''
@@ -36,8 +36,8 @@
         src = final.fetchFromGitHub {
           owner = "DanielGavin";
           repo = "ols";
-          rev = "bd0461b45a29f2b638252a8ff27ecdb764f1c4ec";
-          sha256 = "sha256-XeJWW3ro2hTp6VPMaW3RUzNujc2WXLy/ob/0hAsNKc0=";
+          rev = "27d60a6d937ed25ce22691147bd07251046284c7";
+          sha256 = "sha256-83U7b/WLj9hk2X9V3ABK6e2ELM7VjTgSESWnnbhLlxE=";
         };
 
         buildInputs = [ final.odin ];
@@ -65,7 +65,7 @@
           owner = "Meumeu";
           repo = "WiVRn";
           rev = version;
-          sha256 = "sha256-rhlxVI2hv66USF52C0VNG6QtJTaK893VRJZOyaxoQAM=";
+          sha256 = "sha256-ZszjBF6xtReNOUxKdbCoZTnzP6sWO7YmUricVjJEcCY=";
         };
 
         nativeBuildInputs = with final; [
