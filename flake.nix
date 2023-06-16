@@ -14,21 +14,55 @@
   in {
     overlays.default = final: prev: {
       # ---- ODIN ----
-      odin = prev.odin.overrideAttrs (self: prev: rec {
+      odin = final.llvmPackages_13.stdenv.mkDerivation rec {
+        pname = "odin";
         version = "dev-2023-05";
+
         src = final.fetchFromGitHub {
           owner = "odin-lang";
           repo = "Odin";
           rev = version;
           sha256 = "sha256-qEewo2h4dpivJ7D4RxxBZbtrsiMJ7AgqJcucmanbgxY=";
         };
-        LLVM_CONFIG = "${final.llvm.dev}/bin/llvm-config";
+
+        nativeBuildInputs = with final; [
+          makeWrapper which
+        ];
+
+        LLVM_CONFIG = "${final.llvmPackages_13.llvm.dev}/bin/llvm-config";
+
         postPatch = ''
-          sed -i 's/^GIT_SHA=.*$/GIT_SHA=/' build_odin.sh
-          sed -i 's/^have_which$//' build_odin.sh
+          sed -i build_odin.sh \
+            -e 's/^GIT_SHA=.*$/GIT_SHA=/' \
+            -e 's/LLVM-C/LLVM/' \
+            -e 's/framework System/lSystem/'
           patchShebangs build_odin.sh
         '';
-      });
+
+        dontConfigure = true;
+
+        buildFlags = [
+          "release"
+        ];
+
+        installPhase = ''
+          mkdir -p $out/bin
+          cp odin $out/bin/odin
+
+          mkdir -p $out/share
+          cp -r core $out/share/core
+          cp -r vendor $out/share/vendor
+
+          wrapProgram $out/bin/odin \
+            --prefix PATH : ${final.lib.makeBinPath (with final.llvmPackages_13; [
+              bintools
+              llvm
+              clang
+              lld
+            ])} \
+            --set-default ODIN_ROOT $out/share
+        '';
+      };
       ols = final.stdenv.mkDerivation {
         pname = "ols";
         version = "20230421";
@@ -36,11 +70,17 @@
         src = final.fetchFromGitHub {
           owner = "DanielGavin";
           repo = "ols";
-          rev = "27d60a6d937ed25ce22691147bd07251046284c7";
-          sha256 = "sha256-83U7b/WLj9hk2X9V3ABK6e2ELM7VjTgSESWnnbhLlxE=";
+          rev = "fd136199897d5e5c87f6f1fbfd076ed18e41d7b7";
+          sha256 = "sha256-lRoDSc2bZSuXTam3Q5OOlSD6YAobCFKNRbtQ41Qx5EY=";
         };
 
-        buildInputs = [ final.odin ];
+        nativeBuildInputs = with final; [
+          makeWrapper
+        ];
+
+        buildInputs = with final; [
+          odin
+        ];
 
         postPatch = ''
           patchShebangs build.sh
@@ -53,6 +93,7 @@
         installPhase = ''
           mkdir -p $out/bin
           cp ols $out/bin
+          wrapProgram $out/bin/ols --set-default ODIN_ROOT ${final.odin}/share
         '';
       };
 
@@ -132,7 +173,7 @@
       '';
     };
     packages."x86_64-linux" = {
-      inherit (pkgs) odin ols marksman wivrn-server wivrn-client-install stardust-xr-server;
+      inherit (pkgs) odin ols marksman wivrn-server wivrn-client-install;
     };
   };
 }
