@@ -16,7 +16,6 @@
     packages = system: let
       pkgs = import nixpkgs {
         inherit system;
-        config.allowUnfree = true;
         overlays = [ self.overlays.default ];
       };
     in
