@@ -3,13 +3,13 @@
 {
   wivrn-server = pkgs.stdenv.mkDerivation rec {
     pname = "wivrn-server";
-    version = "v0.4";
+    version = "v0.5";
 
     src = pkgs.fetchFromGitHub {
       owner = "Meumeu";
       repo = "WiVRn";
       rev = version;
-      sha256 = "sha256-ZszjBF6xtReNOUxKdbCoZTnzP6sWO7YmUricVjJEcCY=";
+      sha256 = "sha256-oi3DSn80kdhXKTa+q9vrreDuTYhm40+oZY03npy2Eac=";
     };
 
     nativeBuildInputs = with pkgs; [
@@ -37,8 +37,8 @@
       }}"
       "-DFETCHCONTENT_SOURCE_DIR_MONADO=${pkgs.fetchgit {
         url = "https://gitlab.freedesktop.org/monado/monado";
-        rev = "3046a5eee4105c4d1c07bc466d6e3a0bb749df42";
-        sha256 = "sha256-nm56IiNr/LYxhkG1bBhNdbL4jIbO+BN30dIjF1N2DJE=";
+        rev = "e9475b13137db2cca8571576b5381a70fb8180a5";
+        sha256 = "sha256-9EgXrxgbFtln+gQU/DI1yceJWSEC16aZyt2jGzFdvDM=";
       }}"
     ];
 
