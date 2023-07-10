@@ -1,54 +1,43 @@
 { pkgs, ... }:
 
 let
-  hotswap-agent-src = pkgs.fetchFromGitHub {
-    owner = "HotswapProjects";
-    repo = "HotswapAgent";
-    rev = "99e9a89570504206f2e60b6105d57a12119864aa";
-    sha256 = "sha256-FEGq8yM5N6Irp4dV2VqQ7kH/9342RWqgHPqS/x0CCBA=";
-  };
-  hotswap-agent-patches = [
-    (pkgs.fetchpatch {
-      # fix proxy crash
-      url = "https://github.com/Astavie/HotswapAgent/commit/eeb0e95c863d5f975aebdd8146b46150df4d1902.patch";
-      sha256 = "sha256-qVyngRJuxaOVgSrZzSNXAQF9VnRVDDFjif8nS/EUwaE=";
-    })
-  ];
-
-  hotswap-agent-dependencies = with pkgs; stdenv.mkDerivation {
-    name = "hotswap-agent-dependencies";
-    buildInputs = [ jetbrains.jdk maven ];
-    src = hotswap-agent-src;
-    patches = hotswap-agent-patches;
-
-    buildPhase = ''
-      while mvn package -DskipTests -Dmaven.repo.local=$out/.m2 -Dmaven.wagon.rto=5000; [ $? = 1 ]; do
-        echo "timeout, restart maven to continue downloading"
-      done
-    '';
-    # keep only *.{pom,jar,sha1,nbm} and delete all ephemeral files with lastModified timestamps inside
-    installPhase = ''
-        find $out/.m2 -type f -regex '.+\\(\\.lastUpdated\\|resolver-status\\.properties\\|_remote\\.repositories\\)' -delete
-    '';
-    outputHashAlgo = "sha256";
-    outputHashMode = "recursive";
-    outputHash = "sha256-iZTpZAPSKSAfYfcgDvIQzM0JD2+o3tYuz92B11ZCQpY=";
-  };
-  hotswap-agent = with pkgs; stdenv.mkDerivation {
-    name = "hotswap-agent";
+  hotswap-agent = with pkgs; maven.buildMavenPackage {
+    pname = "hotswap-agent";
     version = "1.4.2-SNAPSHOT";
-    buildInputs = [ jetbrains.jdk maven ];
-    src = hotswap-agent-src;
-    patches = hotswap-agent-patches;
-  
-    buildPhase = ''
-      # 'maven.repo.local' must be writable so copy it out of nix store
-      mvn package --offline -DskipTests -Dmaven.repo.local=${hotswap-agent-dependencies}/.m2
-    '';
+
+    src = fetchFromGitHub {
+      owner = "HotswapProjects";
+      repo = "HotswapAgent";
+      rev = "783bdde4191a5e56ec59837cd8d13ed7ef43f842";
+      sha256 = "sha256-pLIrUqjgsvC6fH/D2QZ/tb/Fla0RgRv1eThSTtLywX0=";
+    };
+
+    patches = [
+      (pkgs.fetchpatch {
+        # fix proxy crash
+        url = "https://github.com/Astavie/HotswapAgent/commit/eeb0e95c863d5f975aebdd8146b46150df4d1902.patch";
+        sha256 = "sha256-qVyngRJuxaOVgSrZzSNXAQF9VnRVDDFjif8nS/EUwaE=";
+      })
+    ];
+
+    nativeBuildInputs = [ maven ];
+
+    # use jetbrains jdk
+    JAVA_HOME = "${jetbrains.jdk}";
+    mvnFetchExtraArgs.JAVA_HOME = "${jetbrains.jdk}";
+
+    dontConfigure = true;
+    mvnFetchExtraArgs.dontConfigure = true;
+    mvnParameters = "-DskipTests";
+    mvnHash = "sha256-W5DtrSLki/fat6dwesoocODM6XvwqW8RZnFH5uQ5wIc=";
 
     installPhase = ''
+      runHook preInstall
+
       mkdir $out
       cp hotswap-agent/target/hotswap-agent.jar $out/
+
+      runHook postInstall
     '';
   };
 in
@@ -56,7 +45,9 @@ in
   gradlew-hotswap = (pkgs.writeShellScriptBin "gradlew-hotswap" ''
     ./gradlew $@ -Dastavie.jvm="-XX:+AllowEnhancedClassRedefinition -javaagent:${hotswap-agent}/hotswap-agent.jar=autoHotswap=true,disablePlugin=Log4j2 --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=java.desktop/java.beans=ALL-UNNAMED"
   '');
-  java-language-server = with pkgs; (java-language-server.overrideAttrs (final: prev: {
+  minecraft-language-server = with pkgs; (java-language-server.overrideAttrs (final: prev: {
+    pname = "minecraft-language-server";
+
     patches = (prev.patches or []) ++ [
       (fetchpatch {
         # remove deprecated rangeLength

@@ -14,7 +14,7 @@
       paths = [
         maven
         gradlew-hotswap
-        java-language-server
+        minecraft-language-server
         jetbrains.jdk
       ];
     };

@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+  inputs.nixpkgs.url = "github:Astavie/nixpkgs";
 
   inputs.fenix.url = "github:nix-community/fenix";
   inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -7,7 +7,6 @@
   outputs = { self, nixpkgs, fenix }: let
 
     modules = [
-      ./odin.nix
       ./wivrn.nix
       ./minecraft.nix
       ./dev.nix
