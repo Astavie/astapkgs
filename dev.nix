@@ -32,6 +32,7 @@
         fenix.default.toolchain
         rust-analyzer
         bacon
+        cargo-watch
       ];
     };
   };
