@@ -30,7 +30,7 @@
       name = "rust-dev";
       paths = [
         fenix.default.toolchain
-        rust-analyzer
+        fenix.rust-analyzer
         bacon
         cargo-watch
       ];
