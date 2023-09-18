@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:Astavie/nixpkgs";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
   inputs.fenix.url = "github:nix-community/fenix";
   inputs.fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -10,6 +10,7 @@
       ./wivrn.nix
       ./minecraft.nix
       ./dev.nix
+      ./discord.nix
     ];
 
     system-pkgs = system: import nixpkgs {
