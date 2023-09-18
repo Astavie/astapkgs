@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ nixpkgs }:
 
 let
-  hotswap-agent = with pkgs; maven.buildMavenPackage {
+  hotswap-agent = with nixpkgs; maven.buildMavenPackage {
     pname = "hotswap-agent";
     version = "1.4.2-SNAPSHOT";
 
@@ -13,7 +13,7 @@ let
     };
 
     patches = [
-      (pkgs.fetchpatch {
+      (nixpkgs.fetchpatch {
         # fix proxy crash
         url = "https://github.com/Astavie/HotswapAgent/commit/eeb0e95c863d5f975aebdd8146b46150df4d1902.patch";
         sha256 = "sha256-qVyngRJuxaOVgSrZzSNXAQF9VnRVDDFjif8nS/EUwaE=";
@@ -42,10 +42,10 @@ let
   };
 in
 {
-  gradlew-hotswap = (pkgs.writeShellScriptBin "gradlew-hotswap" ''
+  gradlew-hotswap = (nixpkgs.writeShellScriptBin "gradlew-hotswap" ''
     ./gradlew $@ -Dastavie.jvm="-XX:+AllowEnhancedClassRedefinition -javaagent:${hotswap-agent}/hotswap-agent.jar=autoHotswap=true,disablePlugin=Log4j2 --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED --add-opens=java.desktop/java.beans=ALL-UNNAMED"
   '');
-  minecraft-language-server = with pkgs; (java-language-server.overrideAttrs (final: prev: {
+  minecraft-language-server = with nixpkgs; (java-language-server.overrideAttrs (final: prev: {
     pname = "minecraft-language-server";
 
     patches = (prev.patches or []) ++ [

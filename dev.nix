@@ -1,7 +1,7 @@
-{ pkgs, fenix }:
+{ nixpkgs, astapkgs, fenix }:
 
 {
-  dev = with pkgs; {
+  dev = with nixpkgs; with astapkgs; {
     odin = buildEnv {
       name = "odin-dev";
       paths = [

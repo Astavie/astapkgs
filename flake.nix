@@ -6,50 +6,23 @@
 
   outputs = { self, nixpkgs, fenix }: let
 
-    modules = [
-      ./wivrn.nix
-      ./minecraft.nix
-      ./dev.nix
-      ./discord.nix
-    ];
-
-    system-pkgs = system: import nixpkgs {
+    system-nixpkgs = system: import nixpkgs {
       inherit system;
-      overlays = [ self.overlays.default ];
     };
 
-    system-packages = system: let
-      pkgs = system-pkgs system;
-    in
-      pkgs.lib.foldr (a: b: a // b) {} (builtins.map (p: import p {
-        inherit pkgs;
-        fenix = fenix.packages.${pkgs.system};
-      }) modules);
+    system-astapkgs = nixpkgs: let
+      astapkgs = self.packages.${nixpkgs.system};
+    in 
+      import ./dev.nix { inherit nixpkgs astapkgs fenix; } //
+      import ./wivrn.nix { inherit nixpkgs; } //
+      import ./minecraft.nix { inherit nixpkgs; } //
+      import ./discord.nix { inherit nixpkgs; } //
+      { };
 
   in {
 
-    overlays.default = pkgs: prev: prev.lib.foldr (a: b: a // b) {} (builtins.map (p: import p {
-      inherit pkgs;
-      fenix = fenix.packages.${pkgs.system};
-    }) modules);
-
-    packages."x86_64-linux" = system-packages "x86_64-linux";
-
-    lib.package = { package ? null, devShell ? null }: systems: {
-      overlays.default = _: pkgs: let
-        pkg = package pkgs;
-      in {
-        ${pkg.pname} = pkg;
-      };
-      packages = builtins.listToAttrs (builtins.map (system: {
-        name = system;
-        value.default = package (system-pkgs system);
-      }) systems);
-      devShells = builtins.listToAttrs (builtins.map (system: {
-        name = system;
-        value.default = devShell (system-pkgs system);
-      }) systems);
-    };
+    overlays.default = pkgs: prev: system-astapkgs prev;
+    packages."x86_64-linux" = system-astapkgs (system-nixpkgs "x86_64-linux");
 
   };
 }
