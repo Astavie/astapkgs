@@ -11,9 +11,10 @@
     };
 
     system-astapkgs = nixpkgs: let
+      fenixpkgs = fenix.packages.${nixpkgs.system};
       astapkgs = self.packages.${nixpkgs.system};
     in 
-      import ./dev.nix { inherit nixpkgs astapkgs fenix; } //
+      import ./dev.nix { inherit nixpkgs astapkgs; fenix = fenixpkgs; } //
       import ./wivrn.nix { inherit nixpkgs; } //
       import ./minecraft.nix { inherit nixpkgs; } //
       import ./discord.nix { inherit nixpkgs; } //
