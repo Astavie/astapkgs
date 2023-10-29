@@ -13,6 +13,7 @@
   pkg-config,
   wrapQtAppsHook,
   pipewire,
+  xdg-desktop-portal
 }:
 
 stdenv.mkDerivation {
@@ -50,5 +51,6 @@ stdenv.mkDerivation {
 
   buildInputs = [
     pipewire
+    xdg-desktop-portal
   ];
 }

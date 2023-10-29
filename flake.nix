@@ -30,11 +30,11 @@
     overlays.default = pkgs: prev: system-astapkgs prev;
     packages."x86_64-linux" = system-astapkgs (system-nixpkgs "x86_64-linux");
 
-    lib.package = { package ? null, devShell ? null }: systems: {
+    lib.package = { name ? null, package ? null, devShell ? null }: systems: {
       overlays.default = _: pkgs: let
         pkg = package pkgs;
       in {
-        ${pkg.pname} = pkg;
+        ${name} = pkg;
       };
       packages = builtins.listToAttrs (builtins.map (system: {
         name = system;
