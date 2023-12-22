@@ -17,7 +17,6 @@
       import ./dev.nix { inherit nixpkgs astapkgs; fenix = fenixpkgs; } //
       import ./wivrn.nix { inherit nixpkgs; } //
       import ./minecraft.nix { inherit nixpkgs; } //
-      import ./discord.nix { inherit nixpkgs; } //
       { };
 
     system-pkgs = system: import nixpkgs {
