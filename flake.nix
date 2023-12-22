@@ -17,7 +17,9 @@
       import ./dev.nix { inherit nixpkgs astapkgs; fenix = fenixpkgs; } //
       import ./wivrn.nix { inherit nixpkgs; } //
       import ./minecraft.nix { inherit nixpkgs; } //
-      { };
+      {
+        firefoxpwa = nixpkgs.callPackage ./firefoxpwa { };
+      };
 
     system-pkgs = system: import nixpkgs {
       inherit system;
