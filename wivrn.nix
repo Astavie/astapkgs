@@ -1,6 +1,6 @@
 { nixpkgs, ... }:
 
-{
+rec {
   wivrn-server = nixpkgs.stdenv.mkDerivation rec {
     pname = "wivrn-server";
     version = "v0.5";
@@ -56,7 +56,7 @@
         {
             "file_format_version": "1.0.0",
             "runtime": {
-                "library_path": "${nixpkgs.wivrn-server}/share/libopenxr_wivrn.so"
+                "library_path": "${wivrn-server}/share/libopenxr_wivrn.so"
             }
         }
       '';
@@ -64,7 +64,7 @@
 
   wivrn-client-install = nixpkgs.writeShellScriptBin "wivrn-client-install" ''
     client_file='${nixpkgs.fetchurl {
-      url = "https://github.com/Meumeu/WiVRn/releases/download/${nixpkgs.wivrn-server.version}/WiVRn-oculus-release.apk";
+      url = "https://github.com/Meumeu/WiVRn/releases/download/${wivrn-server.version}/WiVRn-oculus-release.apk";
       sha256 = "sha256-LWcTKcSbT0QdCHxxwlFH6ZODNt2kxqgoA+Scg5B5HkE=";
     }}'
 
