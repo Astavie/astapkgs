@@ -21,7 +21,7 @@
 
       # nvidia
       cudaPackages.cudatoolkit
-      (linuxPackages.nvidia_x11.override { libsOnly = true; })
+      (linuxPackages.nvidia_x11.override { libsOnly = true; useSettings = false; })
     ];
 
     cmakeFlags = [
