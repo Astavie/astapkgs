@@ -15,7 +15,7 @@
       astapkgs = self.packages.${nixpkgs.system};
     in 
       import ./dev.nix { inherit nixpkgs astapkgs; fenix = fenixpkgs; } //
-      import ./wivrn.nix { inherit nixpkgs; } //
+      import ./vr.nix { inherit nixpkgs; } //
       import ./minecraft.nix { inherit nixpkgs; } //
       {
         firefoxpwa = nixpkgs.callPackage ./firefoxpwa { };
