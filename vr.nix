@@ -75,21 +75,24 @@ rec {
     ${nixpkgs.android-tools}/bin/adb install -r "$client_file"
   '';
 
-  alvr-appimage = nixpkgs.fetchurl {
-    url = "https://github.com/alvr-org/ALVR/releases/download/v20.6.1/ALVR-x86_64.AppImage";
-    sha256 = "sha256-IYw3D18xUGWiFu74c4d8d4tohZztAD6mmZCYsDNxR+A=";
-  };
+  alvr-client-install = nixpkgs.writeShellScriptBin "alvr-client-install" ''
+    client_file='${nixpkgs.fetchurl {
+      url = "https://github.com/alvr-org/ALVR/releases/download/v20.6.1/alvr_client_android.apk";
+      sha256 = "sha256-aHFnVs45H1eVd91vdWKzKoPoz+gqnkcX79ftvzrVn7s=";
+    }}'
+
+    echo "Put on your Quest and authorize this machine to install the ALVR client!"
+    read -p '(press enter when done)'
+
+    echo 'Installing client...'
+    ${nixpkgs.android-tools}/bin/adb install -r "$client_file"
+  '';
 
   alvr = nixpkgs.writeShellScriptBin "alvr" ''
-    LD_LIBRARY_PATH="${with nixpkgs; lib.makeLibraryPath [
-      libGL
-      libxkbcommon
-      wayland
-      xorg.libX11
-      xorg.libXcursor
-      xorg.libXi
-      xorg.libXrandr
-    ]}"
-    ${nixpkgs.appimage-run}/bin/appimage-run ${alvr-appimage}
+    server_file='${nixpkgs.fetchurl {
+      url = "https://github.com/alvr-org/ALVR/releases/download/v20.6.1/ALVR-x86_64.AppImage";
+      sha256 = "sha256-IYw3D18xUGWiFu74c4d8d4tohZztAD6mmZCYsDNxR+A=";
+    }}'
+    ${nixpkgs.appimage-run}/bin/appimage-run "$server_file"
   '';
 }
