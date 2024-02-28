@@ -50,11 +50,6 @@ in
 
     patches = (prev.patches or []) ++ [
       (fetchpatch {
-        # remove deprecated rangeLength
-        url = "https://github.com/Astavie/java-language-server/commit/342b435decbc739b0d23da1bbe2e0cd376c9f299.patch";
-        sha256 = "sha256-aK7HXwMQN4k64q2rXo2hcdaYFhhOIIQuJGy4tyAFYuc=";
-      })
-      (fetchpatch {
         # clamp lineLength to 0 or above
         url = "https://github.com/Astavie/java-language-server/commit/73c71f27aa0b9aa894432e43d195e444b8a616fd.patch";
         sha256 = "sha256-brFvRn+TkYmXQ3VfufeGkDDbHIxK1TMSh0TjlN/026Y=";
