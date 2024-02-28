@@ -29,7 +29,7 @@ let
     dontConfigure = true;
     mvnFetchExtraArgs.dontConfigure = true;
     mvnParameters = "-DskipTests";
-    mvnHash = "sha256-W5DtrSLki/fat6dwesoocODM6XvwqW8RZnFH5uQ5wIc=";
+    mvnHash = "sha256-R5bu/GCvQNCUun9pLi1eN6qM5NShEgov6PydaDcETys=";
 
     installPhase = ''
       runHook preInstall
